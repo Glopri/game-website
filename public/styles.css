@@ -4,12 +4,10 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    margin: 0;
-    padding: 0;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-color: rgb(50, 50, 50);
+    background-color: rgb(46, 0, 38);;
 }
 
 #intro-screen {
@@ -18,7 +16,6 @@ body {
     background-size: 900px auto;
     background-position: center;
     color: white;
-    padding: 20px;
     text-align: center;
     max-width: 900px;
     margin: 0 auto;
@@ -27,8 +24,6 @@ body {
     align-items: flex-start;
     position: relative;
     box-sizing: border-box;
-    padding-top: 50px;  
-    padding-bottom: 50px; 
 }
 
 h2, h1, p {
@@ -47,3 +42,20 @@ button {
     font-size: 16px;
     border-radius: 10px;
     cursor: pointer; /*this is a test to see if git works*/}
+
+#game-screen {
+    display: none;
+}
+
+#game-board {
+    display: grid;
+    background-image: url('images/background.png');
+    color: pink;
+    background-size: cover;
+    background-position: center;
+    width: 49vw;
+    height: 49vw;
+    margin: 0px;
+    border: 0px;
+    background-color: rgb(46, 0, 38);
+}
