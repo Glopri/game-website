@@ -60,14 +60,15 @@ button {
 #game-board {
     display: grid;
     gap: 0;
-    background-image: url('images/background.png'); 
+    background-image: url('images/background.png');
     background-size: cover;
     background-position: center;
     width: fit-content;
     height: fit-content;
     margin: 10px auto;
-    border: 2px solid #333;
+
 }
+    
 
 .cell {
     width: fit-content;

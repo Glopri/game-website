@@ -46,9 +46,9 @@ for (let y = 0; y < BOARD_SIZE; y++) {
     }
 
    }
-   
-   generateObstacles(newBoard);
 
+   generateObstacles(newBoard);
+    
    return newBoard;
 
 }
@@ -80,21 +80,27 @@ for (let y = 0; y< BOARD_SIZE; y++){
 
 function generateObstacles(board){
     const obstacles = [
-        [[0,0], [0,1], [1,0], [1,1]] //a square
+        [[0,0], [0,1], [1,0], [1,1]], // square
+        [[0,0], [1,0], [2,0], [3,0]], //I Block
+        [[0,0], [1,0], [2,0], [1,1]], //T block
     ];
 
     const positions = [
-        {startX: 5, startY: 7},
-        {startX: 10, startY: 10}
+      {startX: 5, startY: 7},
+      {startX: 10, startY: 10},
+      {startX: 2, startY: 2}
     ];
 
-    positions.forEach( pos =>{
-        const randomObstacle = obstacles[0];
+    positions.forEach( pos => {
+       
+        const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
 
         for(coordinatePair of randomObstacle){
             [x,y] = coordinatePair;
-            board [pos.startY + y][pos.startX + x] + "W";
+            board[pos.startY + y][pos.startX + x] = "W";
         }
     });
 
 }
+
+
