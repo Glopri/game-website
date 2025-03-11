@@ -3,9 +3,9 @@ let board; //kenttä talennetaan tähän
 const cellSize = calculateCellSize();
 
 
+
 document.getElementById("new-game-btn").addEventListener('click', startGame);
 
-//JÄÄTIIN TÄHÄN ELI RESPOSIIN
 function calculateCellSize(){
 // Otetaan talteen pienempi luku ikkunan leveydestä ja korkeudesta
   const screenSize = Math.min(window.innerWidth, window.innerHeight);
@@ -29,6 +29,10 @@ function getCell(board, x, y) {
     return board[y][x];
 }
 
+function setCell(board, x, y, value){
+    board [y][x] = value;
+}
+
 function generateRandomBoard(){
 
     const newBoard = Array.from({ length: BOARD_SIZE}, () =>
@@ -36,16 +40,18 @@ function generateRandomBoard(){
 
     console.log(newBoard);
 
-// set walls in edges
-for (let y = 0; y < BOARD_SIZE; y++) {
+    // set walls in edges
+    for (let y = 0; y < BOARD_SIZE; y++) {
 
     for (let x = 0; x < BOARD_SIZE; x++) {
      if (y === 0 || y === BOARD_SIZE - 1 || x === 0 || x === BOARD_SIZE - 1) {
      newBoard[y][x] = 'W'; //W is wall
      }
     }
-
    }
+
+   const [playerX, playerY] = randomEmptyPosition(newBoard);
+   setCell(newBoard, playerX, playerY, 'P');
 
    generateObstacles(newBoard);
     
@@ -71,6 +77,10 @@ for (let y = 0; y< BOARD_SIZE; y++){
             cell.classList.add('wall')
         }
 
+        else if (getCell(board, x, y)=== 'P') {
+            cell.classList.add('player')
+        }
+
         gameBoard.appendChild(cell);
         
     }
@@ -79,16 +89,23 @@ for (let y = 0; y< BOARD_SIZE; y++){
 }
 
 function generateObstacles(board){
+
     const obstacles = [
-        [[0,0], [0,1], [1,0], [1,1]], // square
-        [[0,0], [1,0], [2,0], [3,0]], //I Block
-        [[0,0], [1,0], [2,0], [1,1]], //T block
+        [[0,0], [0,1], [1,0], [1,1]], // neliö
+        [[0,0], [0,1], [0,2], [0,3]],// I
+        [[0,0], [1,0], [2,0], [1,1]], //T
+        [[1,0],[2,0],[1,1],[0,2],[1,2]], // Z
+        [[1,0],[2,0],[0,1],[1,1]], // S
+        [[0,0],[1,0],[1,1],[1,2]], // L
+        [[0,2],[0,1],[1,1],[2,1]]  // J
     ];
 
     const positions = [
       {startX: 5, startY: 7},
       {startX: 10, startY: 10},
-      {startX: 2, startY: 2}
+      {startX: 2, startY: 2},
+      {startX: 4, startY: 10},
+      {startX: 10, startY: 4}
     ];
 
     positions.forEach( pos => {
@@ -101,6 +118,22 @@ function generateObstacles(board){
         }
     });
 
+}
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+   }
+
+function randomEmptyPosition(board){
+
+    x = randomInt(1, BOARD_SIZE -2);
+    y = randomInt(1, BOARD_SIZE - 2);
+
+    if (getCell(board, x, y) === '') {
+        return [x, y];
+    } else  {
+        return randomEmptyPosition(board);
+    }
 }
 
 
