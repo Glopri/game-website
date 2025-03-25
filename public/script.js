@@ -2,6 +2,7 @@ let BOARD_SIZE = 15;
 let board; //kenttä talennetaan tähän
 const cellSize = calculateCellSize();
 let player;
+let ghosts = []; // haamulista 
 
 
 
@@ -40,9 +41,11 @@ function startGame(){
     document.getElementById("intro-screen").style.display = 'none';
     document.getElementById("game-screen").style.display = 'block';
 
-    board = generateRandomBoard();
-    drawBoard(board);
     player = new Player(0,0);
+    board = generateRandomBoard();
+
+    drawBoard(board);
+    
 }
 
 function getCell(board, x, y) {
@@ -59,7 +62,7 @@ function generateRandomBoard(){
     //TÄSSÄ VIRHE ALLA OIKEIN: Array.apply(BOARD_SIZE).fill(' '));
     Array(BOARD_SIZE).fill(' '));
 
-    console.log(newBoard);
+    //console.log(newBoard);
 
     // set walls in edges
     for (let y = 0; y < BOARD_SIZE; y++) {
@@ -71,12 +74,24 @@ function generateRandomBoard(){
     }
    }
 
-  
-
    generateObstacles(newBoard);
+
+   ghosts = [];
+
+   for (let i= 0; i < 10; i++ ){
+    const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+    //console.log(ghostX,ghostY);
+    setCell(newBoard, ghostX, ghostY, 'H');
+    ghosts.push(new Ghost(ghostX,ghostY)); // eli lisätään haamu haamulistaan
+    //console.log(ghosts);
+   }
+
+   
 
    const [playerX, playerY] = randomEmptyPosition(newBoard);
    setCell(newBoard, playerX, playerY, 'P');
+   player.x = playerX;
+   player.y = playerY;
     
    return newBoard;
 
@@ -84,6 +99,7 @@ function generateRandomBoard(){
 
 function drawBoard(board) {
     const gameBoard = document.getElementById('game-board');
+    gameBoard.innerHTML = ' '; //tyhjennetään olemassa oleva sisältö
 
     //Asetataan grid sarakkeet ja rivit dynaamisesti BOARD_SIZEN mukaan
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
@@ -104,10 +120,16 @@ for (let y = 0; y< BOARD_SIZE; y++){
             cell.classList.add('player')
         }
 
+        else if (getCell(board, x, y)=== 'H') {
+            cell.classList.add('hornmonster')
+        }
+
         gameBoard.appendChild(cell);
         
        }
     }
+
+    
 
 }
 
@@ -175,23 +197,40 @@ class Player {
         const currentX = player.x;
         const currentY = player.y;
        
-        console.log('nykyinen sijainti:')
-        console.log(currentX,currentY);
+       // console.log('nykyinen sijainti:')
+       // console.log(currentX,currentY);
 
         //lasketaan uusi sijainti
         const newX = currentX + deltaX;
         const newY = currentY + deltaY;
 
+
+        if(getCell(board, newX, newY) === ' ') {
+            
         //pelaajan uusi sijainti
         player.x = newX;
         player.y = newY;
 
-        console.log('uusi sijainti:')
+       // console.log('uusi sijainti:')
 
-        console.log(newX,newY);
+       // console.log(newX,newY);
+
+       //päivitetään pelikenttä
+       board[currentY][currentX] = ' ';   //tyhjennetään vanha paikka
+       board[newY][newX] = 'P'  // asetetaan uusi paikka
+
+        }
+
+       drawBoard(board);
 
     }
 
 }
 
 
+class Ghost {
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+    }
+}
