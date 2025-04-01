@@ -10,17 +10,29 @@ document.getElementById("new-game-btn").addEventListener('click', startGame);
 
 document.addEventListener('keydown', (event) => {
     switch (event.key){
-        case 'ArrowUp':
+        case 'w':
         player.move(0, -1); 
         break;
-        case 'ArrowDown':
+        case 's':
         player.move(0, 1); 
         break;
-        case 'ArrowLeft':
+        case 'a':
         player.move(-1, 0); 
         break;
-        case 'ArrowRight':
+        case 'd':
         player.move(1, 0); 
+        break;
+        case 'ArrowUp':
+        shootAT(player.x, player.y -1);
+        break;
+        case 'ArrowDown':
+        shootAT(player.x, player.y +1);
+        break;
+        case 'ArrowLeft':
+        shootAT(player.x -1, player.y);
+        break;
+        case 'ArrowRight':
+        shootAT(player.x +1, player.y);
         break;
     }
     event.preventDefault();
@@ -122,6 +134,14 @@ for (let y = 0; y< BOARD_SIZE; y++){
 
         else if (getCell(board, x, y)=== 'H') {
             cell.classList.add('hornmonster')
+        }
+
+        else if (getCell(board, x, y) === 'B') {
+            cell.classList.add('bullet')
+            setTimeout(()=>{
+                setCell(board, x, y, ' ');
+                drawBoard(board);
+            }, 500);
         }
 
         gameBoard.appendChild(cell);
@@ -232,5 +252,19 @@ class Ghost {
     constructor(x, y){
         this.x = x;
         this.y = y;
+    }
+}
+
+function shootAT (x, y){
+    if (getCell(board,x,y) === 'W') {return;}
+    setCell(board, x, y, 'B');
+    drawBoard(board);
+    const ghostIndex = ghosts.findIndex(ghost => ghost.x === x && ghost.y === y);
+
+    if (ghostIndex !== -1) {
+        ghosts.splice(ghostIndex, 1);
+    }
+    if (ghosts.length === 0){
+        alert('Congrats! Everyone is dead now!');
     }
 }
