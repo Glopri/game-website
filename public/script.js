@@ -3,6 +3,7 @@ let board; //kenttä talennetaan tähän
 const cellSize = calculateCellSize();
 let player;
 let ghosts = []; // haamulista 
+let ghostSpeed = 1000;
 
 
 
@@ -55,6 +56,8 @@ function startGame(){
 
     player = new Player(0,0);
     board = generateRandomBoard();
+
+    setInterval(moveGhosts, ghostSpeed);
 
     drawBoard(board);
     
@@ -267,4 +270,37 @@ function shootAT (x, y){
     if (ghosts.length === 0){
         alert('Congrats! Everyone is dead now!');
     }
+}
+
+function moveGhosts (){
+    const oldGhost = ghosts.map(ghost => ({x: ghost.x, y: ghost.y}));
+
+    ghosts.forEach(ghosts => {
+        const possibleNewPositions = [
+            {x: ghosts.x,y: ghosts.y -1 },
+            {x: ghosts.x,y: ghosts.y +1 }, 
+            {x: ghosts.x -1,y: ghosts.y}, 
+            {x: ghosts.x +1,y: ghosts.y}
+        ];
+
+        const validNewPositions = possibleNewPositions.filter(newPosition =>
+            newPosition.x >= 0 && newPosition.x < BOARD_SIZE &&
+            newPosition.y >= 0 && newPosition.y < BOARD_SIZE &&
+            board[newPosition.y][newPosition.x] === ' '
+        );
+
+        if(validNewPositions.length > 0){
+            const randomNewPosition = validNewPositions[Math.floor(Math.random() * validNewPositions.length)]
+
+            ghosts.x = randomNewPosition.x;
+            ghosts.y = randomNewPosition.y;
+        }
+        setCell(board, ghosts.x, ghosts.y, 'H');
+    });
+
+    oldGhost.forEach(ghosts => {
+        board[ghosts.y][ghosts.x] = ' ';
+
+        drawBoard(board);
+    })
 }
