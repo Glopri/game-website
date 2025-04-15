@@ -256,6 +256,36 @@ class Ghost {
         this.x = x;
         this.y = y;
     }
+    moveTowardsPlayer(player, board){
+        let dx = player.x - this.x;
+        let dy = player.y - this.y;
+
+        let moves = [];
+
+        if(Math.abs(dx) > Math.abs(dy)) {
+            if(dx>0) {moves.push({x: this.x+1, y: this.y})}
+            else {moves.push({x: this.x-1, y: this.y})}
+            if (dy>0){moves.push({x: this.x, y: this.y+1})}
+            else{moves.push({x: this.x, y: this.y-1})}
+        }
+        else{
+            if (dy>0){moves.push({x: this.x, y: this.y+1})}
+            else{moves.push({x: this.x, y: this.y-1})} 
+            if(dx>0) {moves.push({x: this.x+1, y: this.y})}
+            else {moves.push({x: this.x-1, y: this.y})}   
+        }
+        const validNewPositions = moves.filter(newPosition =>
+            newPosition.x >= 0 && newPosition.x < BOARD_SIZE &&
+            newPosition.y >= 0 && newPosition.y < BOARD_SIZE &&
+            board[newPosition.y][newPosition.x] === ' '
+        );
+
+        if(validNewPositions.length === 0){{x: this.x, y: this.y}}
+
+        for(let move of validNewPositions){
+            return move;
+        }
+    }
 }
 
 function shootAT (x, y){
@@ -276,7 +306,12 @@ function moveGhosts (){
     const oldGhost = ghosts.map(ghost => ({x: ghost.x, y: ghost.y}));
 
     ghosts.forEach(ghosts => {
-        const possibleNewPositions = [
+        const newPosition=ghosts.moveTowardsPlayer(player, board);
+
+        ghosts.x=newPosition.x;
+        ghosts.y=newPosition.y;
+
+        /*const possibleNewPositions = [
             {x: ghosts.x,y: ghosts.y -1 },
             {x: ghosts.x,y: ghosts.y +1 }, 
             {x: ghosts.x -1,y: ghosts.y}, 
@@ -294,7 +329,7 @@ function moveGhosts (){
 
             ghosts.x = randomNewPosition.x;
             ghosts.y = randomNewPosition.y;
-        }
+        }*/
         setCell(board, ghosts.x, ghosts.y, 'H');
     });
 
